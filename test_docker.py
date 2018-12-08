@@ -20,12 +20,20 @@ class Docker_Handler():
 
     def remove_all_images(self):
         for image in self.client.images.list():
-            self.client.containers.remove()
+            print image
+            print dir(image)
+            self.client.images.remove(image.id,force=True)
+
+    def remove_all_containers(self):
+        for container in self.client.containers.list():
+            print container
+            print dir(container)
+            self.client.containers.remove(container.id,force=True)
 
     def start_image(self):
         self.container = self.client.containers.run(self.image_name, detach=True)
 
 
 docker=Docker_Handler(centos7_image_name)
-docker.start_image()
-docker.remove_all_images()
+#docker.start_image()
+docker.remove_all_containers()
