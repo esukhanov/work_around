@@ -1,3 +1,5 @@
 #!/bin/bash
-# info from
-#https://docs.docker.com/install/linux/docker-ce/centos/#set-up-the-repository
+sudo docker search centos
+#ansible/centos7-ansible            Ansible on Centos7
+docker pull centos
+#docker run -it centos bash
