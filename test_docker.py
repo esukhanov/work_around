@@ -2,7 +2,7 @@
 #  -*- coding: utf-8 -*-
 from io import BytesIO
 from docker import DockerClient
-
+import time
 import docker
 centos7_image_name='centos'
 
@@ -25,15 +25,22 @@ class Docker_Handler():
             self.client.images.remove(image.id,force=True)
 
     def remove_all_containers(self):
-        for container in self.client.containers.list():
+        for container in self.client.containers.list(all=True):
             print container
             print dir(container)
-            self.client.containers.remove(container.id,force=True)
+            container.remove(force=True)
 
-    def start_image(self):
-        self.container = self.client.containers.run(self.image_name, detach=True)
+    def create_container(self):
+        self.container = self.client.containers.create(self.image_name, detach=True)
 
 
 docker=Docker_Handler(centos7_image_name)
-#docker.start_image()
+docker.create_container()
+
+docker.container.start()
+time.sleep(2)
+print docker.container.status
+time.sleep(2)
+docker.container.stop()
 docker.remove_all_containers()
+docker.remove_all_images()
