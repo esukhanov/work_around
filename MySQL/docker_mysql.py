@@ -7,4 +7,6 @@ image_name='mysql'
 
 client = docker.from_env()
 image =client.images.pull(image_name+':latest')
-client.containers.create(image_name, detach=True)
+container=client.containers.create(image_name, detach=True)
+container.run()
+print (docker.container.status)
