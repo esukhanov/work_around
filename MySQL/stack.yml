@@ -7,13 +7,12 @@ services:
   db:
     image: mysql
     command: --default-authentication-plugin=mysql_native_password
-    restart: always
     environment:
     environment:
-      MYSQL_ROOT_PASSWORD: example
+      MYSQL_ROOT_PASSWORD: 123456
 
   adminer:
-    image: adminer
+    image: admin
     restart: always
     ports:
       - 8080:8080
