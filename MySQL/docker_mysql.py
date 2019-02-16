@@ -4,17 +4,37 @@ import docker
 
 
 
-#docker exec -it mysql bash
-
-#docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:latest
-#docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -d mysql:latest
 image_name='mysql_ok'
 mysql_pass='123456'
 client = docker.from_env()
+alpine_name='alpine'
 
 
 def network():
-    return client.networks.create("network1", driver="bridge")
+    ipam_pool = docker.types.IPAMPool(
+        subnet='124.42.0.0/16',
+        iprange='124.42.0.0/24',
+        gateway='124.42.0.254',
+        aux_addresses={
+            'reserved1': '124.42.1.1',
+            'reserved2': '124.42.1.2'
+        }
+    )
+    ipam_config = docker.types.IPAMConfig(pool_configs=[ipam_pool])
+    return client.networks.create("network1", driver="bridge",ipam = ipam_config)
+
+def network2():
+    ipam_pool = docker.types.IPAMPool(
+        subnet='114.42.0.0/16',
+        iprange='114.42.0.0/24',
+        gateway='114.42.0.254',
+        aux_addresses={
+            'reserved1': '114.42.1.1',
+            'reserved2': '114.42.1.2'
+        }
+    )
+    ipam_config = docker.types.IPAMConfig(pool_configs=[ipam_pool])
+    return client.networks.create("network1", driver="bridge",ipam = ipam_config)
 
 def mysql(net):
     #image =client.images.pull(image_name+':latest')
@@ -31,6 +51,18 @@ def mysql(net):
     print (net.containers)
     print (container.status)
 
+def alpine(net):
+    #image =client.images.pull(image_name+':latest')
+    image = client.images.list(name=alpine_name + ':latest')
+    container=client.containers.run(alpine_name,
+                                       detach=True,
+                                       ports={'8080/tcp':'8080'}
+                                    )
+    net.connect(container)
+    print (container.status)
+    print (net.containers)
+    print (container.status)
+
 def remove_all_container_networks():
     for container in client.containers.list(all=True):
         container.remove(force=True)
@@ -40,6 +72,15 @@ def remove_all_container_networks():
     #for inet in client.networks.list():
     #    if inet.name not in ('none','host','bridge'):
     #        inet.remove()
+
+remove_all_container_networks()
+net=network()
+mysql(net)
+alpine(net)
+client.networks.prune()
+
+
+
 # ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'root'; FLUSH;
 # GRANT ALL PRIVILEGES ON *.* TO root@'%' IDENTIFIED BY 'root'
 # docker restart mysql
@@ -49,7 +90,8 @@ def remove_all_container_networks():
 #CREATE USER 'root'@'172.17.0.1'  IDENTIFIED BY 'password';
 #GRANT ALL PRIVILEGES ON * . * TO 'root'@'172.17.0.1';
 #FLUSH PRIVILEGES;
-remove_all_container_networks()
-net=network()
-mysql(net)
-client.networks.prune()
+
+#docker exec -it mysql bash
+
+#docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=123456 -d mysql:latest
+#docker run --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -d mysql:latest
