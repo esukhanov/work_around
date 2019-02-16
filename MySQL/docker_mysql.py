@@ -7,7 +7,7 @@ import docker
 image_name='mysql_ok'
 mysql_pass='123456'
 client = docker.from_env()
-alpine_name='alpine'
+alpine_name='ubuntu_test'
 
 
 def network():
@@ -34,30 +34,51 @@ def network2():
         }
     )
     ipam_config = docker.types.IPAMConfig(pool_configs=[ipam_pool])
-    return client.networks.create("network1", driver="bridge",ipam = ipam_config)
+    return client.networks.create("network2", driver="bridge",ipam = ipam_config)
 
-def mysql(net):
+def mysql():
     #image =client.images.pull(image_name+':latest')
     image = client.images.list(name=image_name + ':latest')
     container=client.containers.run(image_name,
-                                       detach=True,
-                                       ports={'3306/tcp':'3306'},
-                                       environment={'MYSQL_ROOT_PASSWORD':'password',
+                                        detach=True,
+                                        network="network1",
+                                        links={'container': 'alias'},
+                                        ports={'3306/tcp':'3306'},
+                                        environment={'MYSQL_ROOT_PASSWORD':'password',
                                                     'MYSQL_DATABASE':'Test',
                                                     'default-authentication-plugin':'mysql_native_password'
                                                     })
-    net.connect(container)
+    #net.connect(container)
     print (container.status)
-    print (net.containers)
+    #print (net.containers)
     print (container.status)
 
+
+def mysql2():
+    #image =client.images.pull(image_name+':latest')
+    image = client.images.list(name=image_name + ':latest')
+    container=client.containers.run(image_name,
+                                        detach=True,
+                                        links={'container': 'alias'},
+                                        network = "network2",
+                                        ports={'3305/tcp':'3305'},
+                                        environment={'MYSQL_ROOT_PASSWORD':'password',
+                                                    'MYSQL_DATABASE':'Test',
+                                                    'default-authentication-plugin':'mysql_native_password'
+                                                    })
+    #net.connect(container)
+    print (container.status)
+    #print (net.containers)
+    print (container.status)
 def alpine(net):
     #image =client.images.pull(image_name+':latest')
     image = client.images.list(name=alpine_name + ':latest')
     container=client.containers.run(alpine_name,
-                                       detach=True,
-                                       ports={'8080/tcp':'8080'}
+                                    tty=True,
+                                    detach=True,
+                                    ports={'8080/tcp':'8080'}
                                     )
+
     net.connect(container)
     print (container.status)
     print (net.containers)
@@ -75,8 +96,10 @@ def remove_all_container_networks():
 
 remove_all_container_networks()
 net=network()
-mysql(net)
-alpine(net)
+net2=network2()
+mysql()
+mysql2()
+#alpine(net2)
 client.networks.prune()
 
 
