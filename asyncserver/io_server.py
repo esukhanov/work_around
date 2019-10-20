@@ -17,9 +17,11 @@ class Data_machine():
             Data_machine.DATA[addr] = [data]
 
     def show_data(self):
+        print('****************')
         for rec in Data_machine.DATA:
             print(rec)
             print(Data_machine.DATA[rec])
+        print('****************')
 
 
 async def server(reader,writer):
@@ -28,6 +30,7 @@ async def server(reader,writer):
     message = data.decode()
     addr = writer.get_extra_info('peername')
     print("Received %r from %r" % (message, addr))
+    addr = f'{addr[0]}:{addr[1]}'
     dm = Data_machine(addr = addr,data = message)
     dm.show_data()
     print("Send: %r" % message)

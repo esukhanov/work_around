@@ -40,4 +40,4 @@ class Clients():
 while True:
     cl=Clients(10)
     cl.start()
-    time.sleep()
+    time.sleep(2)
