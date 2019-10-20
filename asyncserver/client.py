@@ -26,9 +26,10 @@ class Clients():
         #response = client.recv(4096)
         #print('get %s '%response)
 
-        while True:
-            time.sleep(delay)
-            client.send('sadfasdf'.encode())
+        #while True:
+        time.sleep(delay)
+        client.send('sadfasdf'.encode())
+        
             #mesage=input('Enter your message:')
             #mesage='ping from '+ name
             #client.send(mesage.encode())

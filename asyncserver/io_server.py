@@ -3,7 +3,18 @@
 
 import asyncio
 
+class Data_machine():
 
+    DATA = {}
+
+    def __init__(self,addr = 0,data = 0):
+        print('init')
+        if Data_machine.DATA.get(addr):
+            old_rec = Data_machine.DATA[addr]
+            old_rec.append(data)
+            Data_machine.DATA[addr] = old_rec
+        else:
+            Data_machine.DATA[addr] = [data]
 
 async def server(reader,writer):
 
@@ -11,7 +22,8 @@ async def server(reader,writer):
     message = data.decode()
     addr = writer.get_extra_info('peername')
     print("Received %r from %r" % (message, addr))
-
+    dm = Data_machine(addr = addr,data = message)
+    print(dm.DATA)
     print("Send: %r" % message)
     writer.write(data)
     await writer.drain()

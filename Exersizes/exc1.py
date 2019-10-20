@@ -9,4 +9,21 @@ import time
 def a(n):
     return lambda a:a*n
 
-print (time.time())
+
+
+class A():
+    DATA = {}
+    def __init__(self,data = 0,data2 = 0):
+        print('init')
+        if A.DATA.get(data):
+            old_rec = A.DATA[data]
+            old_rec.append(data2)
+            A.DATA[data] = old_rec
+        else:
+            A.DATA[data] = [data2]
+
+a= A(data = 'asd',data2 = 122)
+a= A(data = 'asds',data2 = 1222)
+a= A(data = 'asds',data2 = 1222)
+
+print(A.DATA)
