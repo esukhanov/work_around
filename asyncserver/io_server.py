@@ -1,0 +1,26 @@
+#!/usr/bin/env python3
+#  -*- coding: utf-8 -*-
+
+import asyncio
+
+
+
+async def server(reader,writer):
+
+    data = await reader.read(100)
+    message = data.decode()
+    addr = writer.get_extra_info('peername')
+    print("Received %r from %r" % (message, addr))
+
+    print("Send: %r" % message)
+    writer.write(data)
+    await writer.drain()
+
+    print("Close the client socket")
+    writer.close()
+
+
+
+loop = asyncio.get_event_loop()
+coro = asyncio.start_server(server, '127.0.0.1', 8888, loop=loop)
+server = loop.run_until_complete(coro)
