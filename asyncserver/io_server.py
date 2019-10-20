@@ -16,6 +16,12 @@ class Data_machine():
         else:
             Data_machine.DATA[addr] = [data]
 
+    def show_data(self):
+        for rec in Data_machine.DATA:
+            print(rec)
+            print(Data_machine.DATA[rec])
+
+
 async def server(reader,writer):
 
     data = await reader.read(100)
@@ -23,7 +29,7 @@ async def server(reader,writer):
     addr = writer.get_extra_info('peername')
     print("Received %r from %r" % (message, addr))
     dm = Data_machine(addr = addr,data = message)
-    print(dm.DATA)
+    dm.show_data()
     print("Send: %r" % message)
     writer.write(data)
     await writer.drain()

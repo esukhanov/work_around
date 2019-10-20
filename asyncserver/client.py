@@ -29,7 +29,7 @@ class Clients():
         #while True:
         time.sleep(delay)
         client.send('sadfasdf'.encode())
-        
+
             #mesage=input('Enter your message:')
             #mesage='ping from '+ name
             #client.send(mesage.encode())
@@ -37,6 +37,7 @@ class Clients():
             #print('get %s '%response)
 
             #time.sleep(0.1)
-
-cl=Clients(100)
-cl.start()
+while True:
+    cl=Clients(10)
+    cl.start()
+    time.sleep()
