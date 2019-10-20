@@ -18,7 +18,7 @@ class Clients():
         name=random.choice('afdgjklouytrew')+random.choice('afdgjklouytrew')+random.choice('afdgjklouytrew')+str(_cient_num)
         delay = random.randint(0,3)
         bind_ip = '192.168.31.13'
-        bind_port = 8082
+        bind_port = 8888
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         client.connect((bind_ip, bind_port))
         #time.sleep(delay)
