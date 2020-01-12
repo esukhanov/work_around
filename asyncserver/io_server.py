@@ -31,7 +31,7 @@ async def server(reader,writer):
     addr = writer.get_extra_info('peername')
     print("Received %r from %r" % (message, addr))
     addr = f'{addr[0]}:{addr[1]}'
-    dm = Data_machine(addr = addr,data = message)
+    dm = Data_machine(addr = message,data = addr)
     dm.show_data()
     print("Send: %r" % message)
     writer.write(data)

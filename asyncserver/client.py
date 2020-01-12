@@ -38,6 +38,5 @@ class Clients():
 
             #time.sleep(0.1)
 while True:
-    cl=Clients(10)
+    cl=Clients(100)
     cl.start()
-    time.sleep(2)
